@@ -47,3 +47,6 @@ http://localhost:4173/openclaw-cloud-guide/
 - Purchase: `https://opensale.chunlin.lat/`
 - Support QQ group: `722701192`
 - Support QQ: `1499831507`
+- Email: `17671460675@163.com`
+- WeChat: `17671460675`
+- If you want the tutorial, you can contact directly.
