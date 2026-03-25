@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw 云端使用指南</title>
+  <meta name="description" content="免服务器、免域名、免部署，直接通过 Telegram 或 Discord 使用 OpenClaw 云端版。">
+  <meta name="keywords" content="OpenClaw, OpenClaw 云端, AI 编程助手, Telegram, Discord, 免部署, 免服务器, 免域名">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">OpenClaw Cloud Guide</p>
+        <h1>想用 Claude Sonnet 4.5，但不想自己准备服务器、域名和整套部署环境？</h1>
+        <p class="lead">
+          这是一个面向中文用户的 OpenClaw 云端使用说明与购买入口。
+          你可以直接通过 Telegram 或 Discord 接入，不必自己从零折腾整套环境。
+        </p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="https://opensale.chunlin.lat/" target="_blank" rel="noreferrer">立即购买</a>
+          <a class="ghost-btn" href="./docs/quick-start.md">查看快速开始</a>
+        </div>
+        <div class="hero-notes">
+          <span>免服务器</span>
+          <span>免域名</span>
+          <span>免部署</span>
+          <span>支持 Telegram / Discord</span>
+        </div>
+      </div>
+      <aside class="status-card">
+        <h2>当前适合的人</h2>
+        <ul id="audienceList"></ul>
+        <div class="support-card">
+          <strong>售后支持</strong>
+          <p>QQ群：722701192</p>
+          <p>客服 QQ：1499831507</p>
+          <button id="copyGroupBtn" class="tiny-btn">复制QQ群号</button>
+        </div>
+      </aside>
+    </header>
+
+    <main>
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Why</p>
+          <h2>它解决什么问题</h2>
+        </div>
+        <div id="problemGrid" class="card-grid"></div>
+      </section>
+
+      <section class="section alt">
+        <div class="section-head">
+          <p class="eyebrow">Features</p>
+          <h2>当前支持</h2>
+        </div>
+        <div id="featureGrid" class="feature-grid"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <p class="eyebrow">Flow</p>
+          <h2>从购买到开始使用</h2>
+        </div>
+        <ol id="flowList" class="flow-list"></ol>
+      </section>
+
+      <section class="section alt">
+        <div class="section-head">
+          <p class="eyebrow">FAQ</p>
+          <h2>常见问题</h2>
+        </div>
+        <div class="faq-tools">
+          <input id="faqSearch" type="search" placeholder="搜索关键词，例如：Token、Telegram、部署">
+        </div>
+        <div id="faqList" class="faq-list"></div>
+      </section>
+
+      <section class="section cta">
+        <div class="cta-card">
+          <div>
+            <p class="eyebrow">Start Now</p>
+            <h2>如果你想少折腾前置环境，直接开始用，可以从这里进入</h2>
+            <p>不需要自己先准备服务器、域名和整套接入流程。</p>
+          </div>
+          <div class="cta-actions">
+            <a class="primary-btn" href="https://opensale.chunlin.lat/" target="_blank" rel="noreferrer">打开购买页</a>
+            <a class="ghost-btn" href="./docs/faq.md">查看 FAQ</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

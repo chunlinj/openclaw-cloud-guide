@@ -1,0 +1,9 @@
+{
+  "name": "openclaw-cloud-guide",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Public documentation and static landing page for OpenClaw cloud usage",
+  "scripts": {
+    "serve": "python -m http.server 4173"
+  }
+}

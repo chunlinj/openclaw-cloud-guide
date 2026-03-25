@@ -1,0 +1,92 @@
+{
+  "audience": [
+    "想直接开始使用 AI 编程助手的人",
+    "不想自己准备服务器和域名的人",
+    "不想自己搭整套网关和部署流程的人",
+    "希望通过 Telegram 或 Discord 使用的人"
+  ],
+  "problems": [
+    {
+      "title": "想用 Claude Sonnet 4.5，但觉得 Token 成本高",
+      "description": "很多人不是不用模型，而是担心高频使用下的 API 计费压力。"
+    },
+    {
+      "title": "不想自己折腾服务器和域名",
+      "description": "如果你不想先买服务器、配域名、处理支付和回调，可以直接走云端版。"
+    },
+    {
+      "title": "不想从零搭 Telegram / Discord 接入",
+      "description": "公开页面会说明从购买到配对的实际步骤，而不是只给一个空泛入口。"
+    },
+    {
+      "title": "希望更快开始，而不是先花时间部署",
+      "description": "支付成功后继续进入配对页面，完成后就可以开始使用。"
+    }
+  ],
+  "features": [
+    {
+      "title": "免服务器",
+      "description": "正常购买和使用流程下，不需要自己先准备服务器。"
+    },
+    {
+      "title": "免域名",
+      "description": "不需要自己先准备域名和访问入口。"
+    },
+    {
+      "title": "免部署",
+      "description": "不需要自己从零搭整套 OpenClaw 运行环境。"
+    },
+    {
+      "title": "支持 Telegram",
+      "description": "支付后可以进入 Telegram 配对流程。"
+    },
+    {
+      "title": "支持 Discord",
+      "description": "支付后可以进入 Discord 配对流程。"
+    },
+    {
+      "title": "有售后入口",
+      "description": "支付、配对、使用异常都可以通过 QQ 群和客服协助处理。"
+    }
+  ],
+  "flow": [
+    "打开购买页面，选择套餐并填写邮箱。",
+    "完成支付后进入配对选择页。",
+    "选择 Telegram 或 Discord。",
+    "按页面提示准备并填写对应 Bot Token。",
+    "系统自动下发配置并完成配对。",
+    "在对应渠道中开始使用 OpenClaw。"
+  ],
+  "faq": [
+    {
+      "question": "这是公开教程还是售卖说明？",
+      "answer": "两者都有。这个仓库既是公开说明页，也是使用与购买的引导入口。",
+      "keywords": ["教程", "售卖", "购买", "说明"]
+    },
+    {
+      "question": "需要自己准备服务器吗？",
+      "answer": "正常购买和使用流程下不需要，常规场景也不需要自己准备域名。",
+      "keywords": ["服务器", "域名", "部署"]
+    },
+    {
+      "question": "支持哪些渠道？",
+      "answer": "当前支持 Telegram 和 Discord。",
+      "keywords": ["telegram", "discord", "渠道", "配对"]
+    },
+    {
+      "question": "如果机器人没有回复怎么办？",
+      "answer": "先检查是否完成支付、是否进入正确的配对页、是否填写了正确的 Bot Token；如果仍有问题，可联系售后。",
+      "keywords": ["机器人", "没回复", "token", "售后"]
+    },
+    {
+      "question": "适合哪些场景？",
+      "answer": "更适合代码编写、代码修改、调试排查、脚本处理和配置调整等场景。",
+      "keywords": ["代码", "调试", "脚本", "配置"]
+    },
+    {
+      "question": "如果想快速开始应该看哪里？",
+      "answer": "先看 docs/quick-start.md，再按页面引导完成购买和配对即可。",
+      "keywords": ["快速开始", "quick-start", "购买", "流程"]
+    }
+  ]
+}
