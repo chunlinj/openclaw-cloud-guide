@@ -1,6 +1,6 @@
 # OpenClaw Cloud Guide
 
-Public-facing documentation and landing page for OpenClaw cloud usage.
+Public-facing documentation and landing page for an OpenClaw cloud setup focused on fast onboarding and always-on usage.
 
 This repository is intentionally safe to publish:
 - No production backend code
@@ -27,6 +27,13 @@ This repository is only for:
 - feature overview
 - onboarding guidance
 - purchase and support entry points
+
+## Core positioning
+
+- High-frequency Claude Sonnet 4.5 usage without building the whole stack yourself
+- A dedicated OpenClaw assistant that can stay online 24/7
+- Fast onboarding without preparing your own server, domain, and deployment chain
+- Suitable for users who want to move toward real online application workflows
 
 ## Local preview
 
