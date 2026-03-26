@@ -61,8 +61,6 @@
 
 这点对新手非常友好。
 
-![OpenClaw 官方 Feishu 文档截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-feishu-doc-top.png)
-
 ---
 
 ### 2. 飞书通道需要准备什么
@@ -106,6 +104,8 @@ openclaw plugins install @openclaw/feishu
 2. 填应用名称和描述
 3. 选一个应用图标
 
+![飞书开放平台创建自建应用界面](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/feishu-create-custom-app.png)
+
 #### 第三步：复制凭证
 
 在应用后台的 `Credentials & Basic Info` 里，复制：
@@ -129,6 +129,8 @@ openclaw plugins install @openclaw/feishu
 - 但收不到消息
 - 或者能收到消息但发不出去
 
+![飞书权限与 scopes 配置界面](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/feishu-permissions-scopes.png)
+
 #### 第五步：开启 Bot 能力
 
 在应用能力里，打开 `Bot`，并设置机器人名称。
@@ -145,6 +147,10 @@ openclaw plugins install @openclaw/feishu
 4. 添加事件：`im.message.receive_v1`
 
 也就是说，飞书这条线路推荐的是 **长连接 / WebSocket 模式**，不是你自己再搭一层公网 webhook。
+
+![飞书凭证页 App ID 与 App Secret 截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/feishu-credentials-basic-info.png)
+
+![飞书 Events & Callbacks 配置界面](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/feishu-events-callbacks.png)
 
 #### 第七步：发布应用
 
@@ -277,8 +283,6 @@ Telegram 更适合这类用户：
 
 所以如果你不想折腾网络环境，先接飞书通常更稳。
 
-![OpenClaw 官方 Telegram 文档截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-telegram-doc-top.png)
-
 ---
 
 ### 2. Telegram 侧需要准备什么
@@ -298,6 +302,14 @@ Telegram 这边最核心的就是一个东西：
 ```
 
 按流程创建完成后，保存好 Bot Token。
+
+![Telegram 中搜索并打开 @BotFather 的界面截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/telegram-botfather-search.png)
+
+![给 BotFather 发送 /newbot 命令的截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/telegram-newbot-command.png)
+
+![设置 Telegram 机器人名称和用户名的截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/telegram-bot-name-username.png)
+
+![Telegram BotFather 返回 Bot Token 的截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/telegram-bot-token.png)
 
 ---
 
@@ -429,8 +441,6 @@ Discord 更适合：
 
 如果是给国内普通用户直接用，我依旧更建议先推飞书。
 
-![OpenClaw 官方 Discord 文档截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-discord-doc-top.png)
-
 ---
 
 ### 2. Discord 官方建议怎么接
@@ -460,6 +470,8 @@ OpenClaw 官方文档对 Discord 的建议非常明确：
 3. 进入左侧 `Bot`
 4. 设置 Bot 名称
 
+![Discord Developer Portal 创建新应用界面截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/discord-new-application.png)
+
 #### 第二步：开启 Intents
 
 根据 OpenClaw 官方文档，至少要开：
@@ -478,6 +490,8 @@ OpenClaw 官方文档对 Discord 的建议非常明确：
 
 **Bot 在线，但看不到你发的消息。**
 
+![Discord 开启 Message Content Intent 的界面截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/discord-message-content-intent.png)
+
 #### 第三步：复制 Bot Token
 
 在 Bot 页面点 `Reset Token`。
@@ -487,6 +501,8 @@ OpenClaw 官方文档对 Discord 的建议非常明确：
 虽然按钮名字叫 Reset，但第一次生成 token 也会走这个按钮，不是说你真的重置了什么旧 token。
 
 复制后妥善保存。
+
+![Discord Bot Token 生成与复制界面截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/discord-bot-token.png)
 
 #### 第四步：生成邀请链接并拉进服务器
 
@@ -509,6 +525,8 @@ Bot Permissions 至少建议勾上：
 这一步你可以理解成：
 
 **不给权限，OpenClaw 不一定没装好，但 Bot 在 Discord 里就是干不了活。**
+
+![Discord Bot Permissions 勾选界面截图](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/discord-bot-permissions.png)
 
 #### 第五步：开启 Developer Mode，复制 ID
 
@@ -726,3 +744,9 @@ OpenClaw 官方文档专门提到，Discord 很适合往“guild workspace”方
 - OpenClaw Feishu 官方文档：<https://docs.openclaw.ai/channels/feishu>
 - OpenClaw Telegram 官方文档：<https://docs.openclaw.ai/channels/telegram>
 - OpenClaw Discord 官方文档：<https://docs.openclaw.ai/channels/discord>
+
+## 配图来源说明
+
+- 飞书步骤截图整理自 OpenClaw Club 的公开快速开始页面
+- Telegram BotFather 步骤截图整理自 Expertflow 的公开 Telegram Bot 创建指南
+- Discord Developer Portal 步骤截图整理自 Yoom Help Center 的公开 Discord Bot 接入指南
