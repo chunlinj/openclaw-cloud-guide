@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">OpenClaw Multi-Agent Architecture</title>
+  <desc id="desc">Feishu, Telegram, and Discord feed tasks into an orchestrator agent that spawns research, coding, and QA agents, then returns summaries back to the channels.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6fbff" />
+      <stop offset="100%" stop-color="#eef7f0" />
+    </linearGradient>
+    <linearGradient id="mainCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#103d5c" />
+      <stop offset="100%" stop-color="#16715f" />
+    </linearGradient>
+    <linearGradient id="workerCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#eef5ff" />
+    </linearGradient>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f6fed" />
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#159f70" />
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0f2740" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)" />
+  <text x="70" y="85" font-size="38" font-family="'Segoe UI', sans-serif" fill="#15324b" font-weight="700">OpenClaw Multi-Agent Collaboration</text>
+  <text x="70" y="126" font-size="20" font-family="'Segoe UI', sans-serif" fill="#4f6577">Main agent receives the task, worker agents run in parallel, and the summary goes back to Feishu, Telegram, or Discord.</text>
+
+  <rect x="70" y="180" width="260" height="520" rx="28" fill="#ffffff" stroke="#d7e4ef" stroke-width="2" filter="url(#shadow)" />
+  <text x="105" y="235" font-size="28" font-family="'Segoe UI', sans-serif" fill="#214056" font-weight="700">Input Channels</text>
+
+  <rect x="105" y="270" width="190" height="95" rx="22" fill="#e9f2ff" stroke="#bcd3ff" stroke-width="2" />
+  <text x="145" y="320" font-size="28" font-family="'Segoe UI', sans-serif" fill="#2459c1" font-weight="700">Feishu</text>
+  <text x="145" y="350" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Requests, alerts, domestic team</text>
+
+  <rect x="105" y="395" width="190" height="95" rx="22" fill="#eefdf7" stroke="#b7ebd3" stroke-width="2" />
+  <text x="136" y="445" font-size="28" font-family="'Segoe UI', sans-serif" fill="#15875d" font-weight="700">Telegram</text>
+  <text x="136" y="475" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Founder and deep-work chat</text>
+
+  <rect x="105" y="520" width="190" height="95" rx="22" fill="#f3f1ff" stroke="#d6cfff" stroke-width="2" />
+  <text x="137" y="570" font-size="28" font-family="'Segoe UI', sans-serif" fill="#5f48c9" font-weight="700">Discord</text>
+  <text x="137" y="600" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Channels, dev discussion</text>
+
+  <rect x="430" y="235" width="350" height="410" rx="36" fill="url(#mainCard)" filter="url(#shadow)" />
+  <text x="490" y="315" font-size="34" font-family="'Segoe UI', sans-serif" fill="#ffffff" font-weight="700">Main Agent / Orchestrator</text>
+  <text x="490" y="365" font-size="22" font-family="'Segoe UI', sans-serif" fill="#dff8f3">1. Receive the task</text>
+  <text x="490" y="405" font-size="22" font-family="'Segoe UI', sans-serif" fill="#dff8f3">2. Split the work</text>
+  <text x="490" y="445" font-size="22" font-family="'Segoe UI', sans-serif" fill="#dff8f3">3. Use sessions_spawn</text>
+  <text x="490" y="485" font-size="22" font-family="'Segoe UI', sans-serif" fill="#dff8f3">4. Summarize and reply</text>
+  <text x="490" y="545" font-size="20" font-family="'Segoe UI', sans-serif" fill="#9de7d4">Best for intake, orchestration, and final responses</text>
+
+  <rect x="900" y="175" width="400" height="560" rx="28" fill="#ffffff" stroke="#d7e4ef" stroke-width="2" filter="url(#shadow)" />
+  <text x="940" y="235" font-size="28" font-family="'Segoe UI', sans-serif" fill="#214056" font-weight="700">Worker Agent Pool</text>
+  <text x="940" y="270" font-size="18" font-family="'Segoe UI', sans-serif" fill="#64778a">Workers can be spawned on demand or kept alive with fixed roles.</text>
+
+  <rect x="940" y="305" width="320" height="105" rx="22" fill="url(#workerCard)" stroke="#cfe0ff" stroke-width="2" />
+  <text x="975" y="353" font-size="28" font-family="'Segoe UI', sans-serif" fill="#2553ad" font-weight="700">Research Agent</text>
+  <text x="975" y="383" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Docs, references, plan options</text>
+
+  <rect x="940" y="440" width="320" height="105" rx="22" fill="url(#workerCard)" stroke="#cfe0ff" stroke-width="2" />
+  <text x="975" y="488" font-size="28" font-family="'Segoe UI', sans-serif" fill="#2553ad" font-weight="700">Coding Agent</text>
+  <text x="975" y="518" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Code changes, scripts, config</text>
+
+  <rect x="940" y="575" width="320" height="105" rx="22" fill="url(#workerCard)" stroke="#cfe0ff" stroke-width="2" />
+  <text x="975" y="623" font-size="28" font-family="'Segoe UI', sans-serif" fill="#2553ad" font-weight="700">QA Agent</text>
+  <text x="975" y="653" font-size="18" font-family="'Segoe UI', sans-serif" fill="#5e7386">Tests, checks, risk review</text>
+
+  <line x1="295" y1="318" x2="430" y2="318" stroke="#2f6fed" stroke-width="6" marker-end="url(#arrowBlue)" />
+  <line x1="295" y1="443" x2="430" y2="443" stroke="#2f6fed" stroke-width="6" marker-end="url(#arrowBlue)" />
+  <line x1="295" y1="568" x2="430" y2="568" stroke="#2f6fed" stroke-width="6" marker-end="url(#arrowBlue)" />
+
+  <line x1="780" y1="350" x2="940" y2="350" stroke="#159f70" stroke-width="6" marker-end="url(#arrowGreen)" />
+  <line x1="780" y1="492" x2="940" y2="492" stroke="#159f70" stroke-width="6" marker-end="url(#arrowGreen)" />
+  <line x1="780" y1="628" x2="940" y2="628" stroke="#159f70" stroke-width="6" marker-end="url(#arrowGreen)" />
+
+  <path d="M1140 735 C1140 800, 620 820, 620 670" fill="none" stroke="#159f70" stroke-width="6" stroke-dasharray="14 12" marker-end="url(#arrowGreen)" />
+  <text x="905" y="805" font-size="20" font-family="'Segoe UI', sans-serif" fill="#3e5b6f">Worker agents report back, then the main agent sends one final answer.</text>
+</svg>

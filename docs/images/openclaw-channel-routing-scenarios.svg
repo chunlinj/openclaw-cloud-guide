@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+  <title id="title">OpenClaw Channel Routing Scenarios</title>
+  <desc id="desc">Practical routing suggestions for Feishu, Telegram, and Discord in a multi-agent OpenClaw deployment.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffdf8" />
+      <stop offset="100%" stop-color="#f2f7ff" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#10253a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1400" height="860" fill="url(#bg)" />
+  <text x="70" y="84" font-size="38" font-family="'Segoe UI', sans-serif" fill="#18344e" font-weight="700">Channel-based routing is more stable than one default agent for everything</text>
+  <text x="70" y="124" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5d7284">This layout is not the only answer, but it is a strong first version for small teams.</text>
+
+  <rect x="70" y="180" width="380" height="560" rx="28" fill="#ffffff" stroke="#dbe7f3" stroke-width="2" filter="url(#shadow)" />
+  <text x="110" y="240" font-size="30" font-family="'Segoe UI', sans-serif" fill="#2459c1" font-weight="700">Feishu</text>
+  <text x="110" y="278" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5e7386">Easy for domestic teams and internal notifications</text>
+  <text x="110" y="335" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Recommended role</text>
+  <text x="110" y="372" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Ops, support, intake, task dispatch</text>
+  <text x="110" y="430" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Best for</text>
+  <text x="110" y="467" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Requirements, handoff, summaries, daily reports</text>
+  <text x="110" y="525" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Why use it</text>
+  <text x="110" y="562" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Low friction in China, no extra network setup</text>
+  <text x="110" y="620" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Watch out</text>
+  <text x="110" y="657" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Great as front desk, not always best for deep technical chat</text>
+
+  <rect x="510" y="180" width="380" height="560" rx="28" fill="#ffffff" stroke="#dbe7f3" stroke-width="2" filter="url(#shadow)" />
+  <text x="550" y="240" font-size="30" font-family="'Segoe UI', sans-serif" fill="#15875d" font-weight="700">Telegram</text>
+  <text x="550" y="278" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5e7386">Great for founders and long, deep conversations</text>
+  <text x="550" y="335" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Recommended role</text>
+  <text x="550" y="372" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Founder assistant, architecture, deep research</text>
+  <text x="550" y="430" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Best for</text>
+  <text x="550" y="467" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Requirement shaping, design discussion, long-term follow-up</text>
+  <text x="550" y="525" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Why use it</text>
+  <text x="550" y="562" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Strong DM experience and smooth continuous chat</text>
+  <text x="550" y="620" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Watch out</text>
+  <text x="550" y="657" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Many users in China will still need a VPN</text>
+
+  <rect x="950" y="180" width="380" height="560" rx="28" fill="#ffffff" stroke="#dbe7f3" stroke-width="2" filter="url(#shadow)" />
+  <text x="990" y="240" font-size="30" font-family="'Segoe UI', sans-serif" fill="#5f48c9" font-weight="700">Discord</text>
+  <text x="990" y="278" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5e7386">Best for long-lived team collaboration across channels</text>
+  <text x="990" y="335" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Recommended role</text>
+  <text x="990" y="372" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Dev team, QA, release notifications</text>
+  <text x="990" y="430" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Best for</text>
+  <text x="990" y="467" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Multi-person review, channel split, version discussion</text>
+  <text x="990" y="525" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Why use it</text>
+  <text x="990" y="562" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Channel isolation makes role separation much easier</text>
+  <text x="990" y="620" font-size="22" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Watch out</text>
+  <text x="990" y="657" font-size="20" font-family="'Segoe UI', sans-serif" fill="#556b7e">Users in China often need a VPN and correct bot permissions</text>
+</svg>
