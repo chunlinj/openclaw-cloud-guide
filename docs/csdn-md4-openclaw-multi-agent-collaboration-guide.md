@@ -629,7 +629,193 @@ Do not use this pattern for trivial single-step requests.
 
 ---
 
-## 十二、一个适合新手理解的示例配置思路
+## 十二、如果你是按 Control UI 来配，实际点击路径怎么走
+
+这一段我按最实用的顺序写，不按所有菜单都讲一遍。
+
+目标只有一个：
+
+**让你在 UI 里把“入口 agent + 编排能力 + 渠道路由”先跑通。**
+
+### 第一步：先建顶层 agent
+
+在 Control UI 里，先去：
+
+```text
+Config -> Agents
+```
+
+然后先建 3 个长期 agent：
+
+1. `ops-agent`
+2. `deepwork-agent`
+3. `dev-agent`
+
+每个 agent 先只填最必要的信息：
+
+- `id`
+- `description`
+- 默认模型或继承模型
+- 对应的用途说明
+
+这里的关键不是一次把配置写满，而是：
+
+**先把角色建出来。**
+
+### 第二步：只给主入口 agent 打开子 agent 编排能力
+
+还是在：
+
+```text
+Config -> Agents -> ops-agent
+```
+
+把和子 agent 相关的能力打开，但第一版先保守一点：
+
+- `subagents.enabled = true`
+- `maxConcurrent = 2` 或 `3`
+- `maxSpawnDepth = 2`
+- `maxChildrenPerAgent = 3` 或 `4`
+
+为什么只配 `ops-agent`？
+
+因为第一版你需要一个稳定的总入口，不要让所有入口都同时能拉子 agent。
+
+否则你后面会很难判断：
+
+- 是谁在拉 worker
+- 回报到底该回给谁
+- 哪个入口在做统一汇总
+
+### 第三步：去 Channels 里做入口绑定
+
+然后去：
+
+```text
+Channels
+```
+
+分别处理三个渠道：
+
+1. 飞书
+2. Telegram
+3. Discord
+
+你的目标不是在这里做编排，而是做**入口绑定**。
+
+也就是让它变成下面这个路由关系：
+
+- 飞书 -> `ops-agent`
+- Telegram -> `deepwork-agent`
+- Discord -> `dev-agent`
+
+如果某个渠道支持多个 account / 多个 bot / 多个 channel mapping，那你就按账号或频道维度绑到指定 agent。
+
+这一步做完以后，你要分别发测试消息验证：
+
+1. 飞书发一句，确认进的是 `ops-agent`
+2. Telegram 发一句，确认进的是 `deepwork-agent`
+3. Discord 发一句，确认进的是 `dev-agent`
+
+只要路由还没稳，就不要往后走。
+
+### 第四步：去 Chat 或 Sessions 验证“消息确实进了对的 agent”
+
+你可以去：
+
+```text
+Sessions
+```
+
+或者：
+
+```text
+Chat
+```
+
+看刚才那三条测试消息分别落到了哪个 session。
+
+你在这里要确认的不是回复内容，而是：
+
+- session 对应的 agent 是否正确
+- 会不会串路由
+- 飞书消息有没有误进 `dev-agent`
+- Discord 消息有没有误进 `ops-agent`
+
+这一步其实是在验收“渠道路由层”。
+
+### 第五步：给 `ops-agent` 加编排提示
+
+等渠道路由没问题以后，再去给 `ops-agent` 加编排规则。
+
+这一步你可以选两种方式：
+
+1. 直接在 agent 的系统提示里写
+2. 做成一个 Skill 挂进去
+
+如果你是第一次做，我更建议你先直接写进 `ops-agent` 的说明里，先把行为跑通。
+
+写法重点只有这几个：
+
+- 简单任务不要拆
+- 复杂任务先拉一个 `orchestrator`
+- `orchestrator` 再拉 research / coding / QA worker
+- worker 只负责单任务
+- `orchestrator` 统一汇总
+- `ops-agent` 最后面向用户输出
+
+也就是说：
+
+这一步不是在 Channels 里配，而是在 **agent 的行为定义里配**。
+
+### 第六步：先拿一个固定复杂任务做回归测试
+
+这个时候，不要拿真实线上复杂需求直接试。
+
+你先在飞书里给 `ops-agent` 发一个固定测试指令：
+
+```text
+请把这个需求拆成调研、实现、QA 三部分，先由编排 agent 组织 worker 执行，最后只输出一份统一总结。
+```
+
+然后你去：
+
+```text
+Sessions
+```
+
+看有没有出现下面这条正确链路：
+
+1. `ops-agent` 收到任务
+2. `ops-agent` 拉出 `orchestrator`
+3. `orchestrator` 再拉出多个 worker
+4. worker 完成后先回给 `orchestrator`
+5. `orchestrator` 再回给 `ops-agent`
+
+如果你看到的是：
+
+- `ops-agent` 直接拉了 3 个 worker
+
+那说明你的编排逻辑还没教成功。
+
+### 第七步：最后再放开更多复杂任务类型
+
+只有固定任务跑顺以后，你再逐步放开：
+
+- 代码评审类
+- 文档调研类
+- 实现加验证类
+- 发布前检查类
+
+不要一开始就把所有复杂任务全扔进去。
+
+多 agent 最大的坑不是能力不够，而是：
+
+**行为边界没收紧。**
+
+---
+
+## 十三、一个适合新手理解的示例配置思路
 
 如果你是第一次做，不要追求“最炫配置”，先追求“最稳配置”。
 
@@ -724,7 +910,7 @@ Do not use this pattern for trivial single-step requests.
 
 ---
 
-## 十三、飞书、Telegram、Discord 结合多 agent 时，最容易踩的坑
+## 十四、飞书、Telegram、Discord 结合多 agent 时，最容易踩的坑
 
 ### 1. 所有渠道都绑定到同一个默认 agent
 
@@ -789,7 +975,7 @@ Do not use this pattern for trivial single-step requests.
 
 ---
 
-## 十四、如果你想把它真正用在团队里，我建议的上线顺序
+## 十五、如果你想把它真正用在团队里，我建议的上线顺序
 
 你可以直接照这个顺序来。
 
@@ -810,7 +996,7 @@ Do not use this pattern for trivial single-step requests.
 
 ---
 
-## 十五、如果你只是想直接拿一个已经搭好的 OpenClaw 多渠道协作环境
+## 十六、如果你只是想直接拿一个已经搭好的 OpenClaw 多渠道协作环境
 
 你看到这里应该也发现了：
 
@@ -842,7 +1028,7 @@ Do not use this pattern for trivial single-step requests.
 
 ---
 
-## 十六、下一篇准备写什么
+## 十七、下一篇准备写什么
 
 如果你觉得这篇有用，后面我会继续按这个路线往下写：
 
