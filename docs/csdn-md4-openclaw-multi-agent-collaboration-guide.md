@@ -318,7 +318,318 @@
 
 ---
 
-## 八、第一次落地时，我建议你这样配
+## 八、你真正关心的：这个多 agent 编排到底要怎么搭
+
+前面几段更偏“理解架构”，这一段我直接讲搭法。
+
+你先记住一句最关键的话：
+
+**渠道路由** 和 **任务编排** 是两层，不要混在一起。
+
+### 第一层：渠道路由
+
+这层解决的是：
+
+- 飞书消息进来之后先找谁
+- Telegram 私聊进来之后先找谁
+- Discord 某个频道进来之后先找谁
+
+这层的目标不是“并行干活”，而是：
+
+**先把不同入口稳定地打到不同顶层 agent。**
+
+最小落地版你就按这个分：
+
+1. 飞书 -> `ops-agent`
+2. Telegram -> `deepwork-agent`
+3. Discord -> `dev-agent`
+
+如果你用的是 Control UI，实际动作就是：
+
+1. 先在 Agents 里建 3 个长期 agent
+2. 再在 Channels 里把不同 channel / account 绑定到对应 agent
+3. 保存并应用配置
+4. 每个入口各发一条测试消息，确认确实进的是你想要的 agent
+
+如果这一步都还没稳定，就先别急着做任务编排。
+
+### 第二层：任务编排
+
+这层解决的是：
+
+- 一个复杂任务进来后要不要拆
+- 拆成几个子任务
+- 哪个子 agent 负责研究
+- 哪个子 agent 负责编码
+- 哪个子 agent 负责 QA
+- 最后谁来统一汇总
+
+这时候才轮到：
+
+- `sessions_spawn`
+- `sessions_send`
+- 子 agent 并发限制
+- 子 agent 深度限制
+
+也就是说：
+
+**先把“谁接消息”配好，再去配“接到消息以后怎么拆任务”。**
+
+---
+
+## 九、一个最小可运行的搭建流程，我建议你直接照着做
+
+这一版是我最建议你真正落地的版本。
+
+### 第一步：先建 3 个顶层 agent
+
+你至少先有：
+
+- `ops-agent`
+- `deepwork-agent`
+- `dev-agent`
+
+分别对应：
+
+- 飞书主入口
+- Telegram 私聊入口
+- Discord 团队入口
+
+这一步的目标只有一个：
+
+**先把渠道入口稳定分流。**
+
+### 第二步：只给主入口 agent 开启子 agent 能力
+
+第一版最稳的做法，不是所有 agent 都能随便拉子 agent，而是：
+
+- 先只让 `ops-agent` 能拉子 agent
+- `deepwork-agent` 和 `dev-agent` 先只做各自入口处理
+
+为什么这样更稳？
+
+因为多 agent 一开始最容易乱的地方，不是模型本身，而是：
+
+- 谁能拉人
+- 拉出来的任务回给谁
+- 哪个入口在做调度
+
+所以第一版先收口到一个主入口最稳。
+
+### 第三步：把子 agent 并发参数收紧
+
+如果你打算让主入口 agent 去做编排，我建议第一版直接按这个思路控住：
+
+- `maxConcurrent`: 2 到 3
+- `maxSpawnDepth`: 2
+- `maxChildrenPerAgent`: 3 到 4
+
+这里有一个关键点很多人会漏：
+
+**如果你想做“组 agent 管理其他子 agent”，`maxSpawnDepth` 至少要允许到 2。**
+
+原因很简单：
+
+1. 主入口 agent 先拉一个“编排子 agent”
+2. 这个编排子 agent 再去拉研究 / 编码 / QA 子 agent
+
+如果深度只有 1，就做不到这一层转发。
+
+### 第四步：明确谁是“入口 agent”，谁是“编排 agent”，谁是“执行 agent”
+
+这一点一定要写清楚，不然 agent 自己也容易乱。
+
+我建议你按这三个角色分：
+
+#### 1. 入口 agent
+
+职责：
+
+- 接收渠道消息
+- 判断任务是否复杂
+- 决定要不要进入编排模式
+- 面向最终用户回消息
+
+#### 2. 编排 agent
+
+职责：
+
+- 接过复杂任务
+- 再拆成研究 / 编码 / QA 等执行子任务
+- 等各个 worker 回报
+- 输出一份结构化总结
+
+#### 3. 执行 agent
+
+职责：
+
+- 只做单一任务
+- 不负责对外解释
+- 不负责最终汇总
+
+这样一分，整个系统会清晰很多。
+
+### 第五步：先用一个固定任务跑通编排
+
+不要一上来就让它处理所有需求。
+
+先挑一个固定模板任务测试，比如：
+
+“请先阅读这个需求并整理方案，再改代码，最后做一轮风险检查。”
+
+只要这类任务能稳定跑通，你再慢慢放更多类型进来。
+
+---
+
+## 十、怎么让“组 agent”管理其他子 agent，并把结果统一汇总回来
+
+这就是你刚刚指出来缺失的核心点。
+
+这里我直接给你最实用的结构。
+
+### 不推荐的结构
+
+主入口 agent 直接同时拉：
+
+- research worker
+- coding worker
+- QA worker
+
+问题在于：
+
+- 主入口 agent 自己还要对用户说话
+- 还要接外部渠道消息
+- 还要自己收 3 份回报
+
+这样很容易乱。
+
+### 更推荐的结构
+
+改成三层：
+
+1. 入口 agent
+2. 编排子 agent
+3. 执行子 agent
+
+也就是：
+
+`入口 agent -> 编排子 agent -> worker 子 agent`
+
+为什么这一版更合理？
+
+因为根据官方子 agent / session tool 文档，`sessions_spawn` 拉出来的子 agent，完成结果会回给**发起者**。
+
+这就意味着：
+
+- 如果是入口 agent 直接拉 3 个 worker
+- 那 3 个 worker 的结果都会直接回给入口 agent
+
+而如果你改成：
+
+1. 入口 agent 只拉 1 个编排子 agent
+2. 编排子 agent 再拉 3 个 worker
+
+那最后：
+
+- 3 个 worker 的结果会先回给编排子 agent
+- 编排子 agent 汇总后，再把统一结果回给入口 agent
+
+这就形成了真正的“组 agent 管理子 agent”的结构。
+
+这才是你要的那个编排链条。
+
+### 这一套的具体执行流程
+
+你可以直接按下面这个顺序理解：
+
+1. 飞书把复杂需求发给 `ops-agent`
+2. `ops-agent` 判断这是复杂任务，需要拆分
+3. `ops-agent` 用 `sessions_spawn` 拉起一个 `orchestrator` 子 agent
+4. `orchestrator` 收到任务后，再分别拉起：
+   - `research-worker`
+   - `coding-worker`
+   - `qa-worker`
+5. 这 3 个 worker 分别执行自己的子任务
+6. 它们执行完成后，结果先回到 `orchestrator`
+7. `orchestrator` 把三份结果整合成一份统一摘要
+8. `orchestrator` 再把摘要回给 `ops-agent`
+9. `ops-agent` 把最终结果整理成面向用户的回复，回发到飞书
+
+这就是最标准的“组 agent 管理子 agent 并汇总”的落地方式。
+
+### 什么时候必须上“编排子 agent”
+
+我建议你遇到下面这类任务时就上：
+
+- 同时包含调研、实现、验证三步
+- 一个任务明显会分成多个平行子任务
+- 你希望最终结果是一个统一结论，而不是 3 份散结果
+
+如果只是简单问题，比如：
+
+- 帮我解释一段代码
+- 帮我改一个小 bug
+- 帮我起草一段回复
+
+那入口 agent 直接自己做就行，不必每次都开编排。
+
+---
+
+## 十一、怎么把这个“编排逻辑”真正教给 agent
+
+只开参数不够。
+
+你还得明确告诉 agent：
+
+- 什么时候该拆任务
+- 什么时候该拉编排子 agent
+- 什么时候只需要自己直接回答
+
+最稳的做法，就是给入口 agent 加一段明确的系统提示，或者做成一个专门的 Skill。
+
+我更建议你做成 Skill，因为后面更好维护。
+
+比如你可以建一个：
+
+```text
+./skills/team_orchestrator/SKILL.md
+```
+
+里面先放一个最小模板：
+
+```md
+---
+name: team_orchestrator
+description: Use this skill when a user request clearly contains multiple parallel workstreams such as research, implementation, and QA that should be split and summarized.
+---
+
+# Team Orchestrator
+
+When the user request contains two or more independent workstreams:
+
+1. Do not execute every step in the main agent directly.
+2. First spawn one orchestrator sub-agent for the whole task.
+3. The orchestrator sub-agent may then spawn specialized worker sub-agents such as research, coding, and QA.
+4. Each worker must only handle its own slice and return a concise result.
+5. The orchestrator must wait for all worker reports, merge them into one summary, and send that summary back to the parent agent.
+6. The parent agent should then produce the final user-facing answer.
+
+Do not use this pattern for trivial single-step requests.
+```
+
+这段模板的重点不在文字优雅，而在于它把编排规则写死了：
+
+- 主入口别自己硬做全部事情
+- 先拉一个编排子 agent
+- 编排子 agent 再拉 worker
+- worker 回给编排子 agent
+- 编排子 agent 再统一汇总
+
+你只要把这个逻辑稳定下来，整个系统的行为就会比“靠 agent 临场发挥”稳定得多。
+
+---
+
+## 十二、一个适合新手理解的示例配置思路
 
 如果你是第一次做，不要追求“最炫配置”，先追求“最稳配置”。
 
@@ -413,7 +724,7 @@
 
 ---
 
-## 十、飞书、Telegram、Discord 结合多 agent 时，最容易踩的坑
+## 十三、飞书、Telegram、Discord 结合多 agent 时，最容易踩的坑
 
 ### 1. 所有渠道都绑定到同一个默认 agent
 
@@ -478,7 +789,7 @@
 
 ---
 
-## 十一、如果你想把它真正用在团队里，我建议的上线顺序
+## 十四、如果你想把它真正用在团队里，我建议的上线顺序
 
 你可以直接照这个顺序来。
 
@@ -499,7 +810,7 @@
 
 ---
 
-## 十二、如果你只是想直接拿一个已经搭好的 OpenClaw 多渠道协作环境
+## 十五、如果你只是想直接拿一个已经搭好的 OpenClaw 多渠道协作环境
 
 你看到这里应该也发现了：
 
@@ -527,16 +838,17 @@
 
 - 邮箱：`17671460675@163.com`
 - 微信：`17671460675`
+- qq: `1499831507`
 
 ---
 
-## 十三、下一篇准备写什么
+## 十六、下一篇准备写什么
 
 如果你觉得这篇有用，后面我会继续按这个路线往下写：
 
 - OpenClaw 的高阶玩法之 Mission Control 多任务 UI 工作流管理
 - OpenClaw 的高阶玩法之 agent 创建 AI，实现自我进化
-- OpenClaw 的高阶玩法之如何把多 agent 和 Skill 组合成长期生产流
+- OpenClaw 的高阶玩法之如何把 Skill、多 agent、Mission Control 组合成一套长期生产流
 
 ---
 
