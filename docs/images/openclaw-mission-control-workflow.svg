@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">OpenClaw Mission Control Workflow</title>
+  <desc id="desc">A workflow showing how channel messages, session control, cron jobs, and logs/config work together in OpenClaw Mission Control.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffdf8" />
+      <stop offset="100%" stop-color="#f0f7ff" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#10253a" flood-opacity="0.12" />
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b67e3" />
+    </marker>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)" />
+  <text x="70" y="88" font-size="40" font-family="'Segoe UI', sans-serif" fill="#17344d" font-weight="700">Mission Control practical workflow</text>
+  <text x="70" y="130" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">This is the operator path: receive, inspect, dispatch, automate, and recover in one browser surface.</text>
+
+  <rect x="90" y="220" width="280" height="140" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="130" y="282" font-size="32" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">1. Channel input</text>
+  <text x="130" y="322" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">Feishu, Telegram, Discord, or local web chat</text>
+
+  <rect x="470" y="180" width="360" height="220" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="510" y="242" font-size="32" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">2. Sessions panel</text>
+  <text x="510" y="282" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">Find the conversation, inspect status, tune think and verbose.</text>
+  <text x="510" y="330" font-size="19" font-family="'Segoe UI', sans-serif" fill="#9a6500">Good for hot sessions and hard bugs.</text>
+
+  <rect x="930" y="180" width="360" height="220" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="970" y="242" font-size="32" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">3. Chat workspace</text>
+  <text x="970" y="282" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">Send a direct instruction, watch tools stream, stop if needed.</text>
+  <text x="970" y="330" font-size="19" font-family="'Segoe UI', sans-serif" fill="#2459c1">Use chat.inject for an internal operator note.</text>
+
+  <rect x="470" y="520" width="360" height="220" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="510" y="582" font-size="32" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">4. Cron panel</text>
+  <text x="510" y="622" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">Turn one-off work into daily or scheduled jobs.</text>
+  <text x="510" y="670" font-size="19" font-family="'Segoe UI', sans-serif" fill="#6347d8">Announce back to a channel, keep internal, or send a webhook.</text>
+
+  <rect x="930" y="520" width="360" height="220" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="970" y="582" font-size="32" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">5. Logs and config</text>
+  <text x="970" y="622" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5c7183">Trace failures, apply config with validation, and recover safely.</text>
+  <text x="970" y="670" font-size="19" font-family="'Segoe UI', sans-serif" fill="#b34242">Last stop when automation or channels go wrong.</text>
+
+  <line x1="370" y1="290" x2="470" y2="290" stroke="#2b67e3" stroke-width="6" marker-end="url(#arrow)" />
+  <line x1="830" y1="290" x2="930" y2="290" stroke="#2b67e3" stroke-width="6" marker-end="url(#arrow)" />
+  <line x1="650" y1="400" x2="650" y2="520" stroke="#2b67e3" stroke-width="6" marker-end="url(#arrow)" />
+  <line x1="1110" y1="400" x2="1110" y2="520" stroke="#2b67e3" stroke-width="6" marker-end="url(#arrow)" />
+  <path d="M930 710 C870 790, 780 810, 690 790" fill="none" stroke="#2b67e3" stroke-width="6" marker-end="url(#arrow)" />
+  <text x="820" y="842" font-size="20" font-family="'Segoe UI', sans-serif" fill="#4c6274">Failures feed back into session tuning and workflow cleanup.</text>
+</svg>

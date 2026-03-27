@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="920" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">OpenClaw Mission Control Panels</title>
+  <desc id="desc">A practical panel map for OpenClaw Mission Control with Chat, Channels, Sessions, Cron, Logs, and Config areas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fbff" />
+      <stop offset="100%" stop-color="#f7fff8" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0e2740" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <rect width="1400" height="920" fill="url(#bg)" />
+  <text x="70" y="86" font-size="40" font-family="'Segoe UI', sans-serif" fill="#17344d" font-weight="700">OpenClaw Mission Control panel map</text>
+  <text x="70" y="128" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5b7183">Use one browser surface to inspect sessions, dispatch work, schedule jobs, and debug the gateway.</text>
+
+  <rect x="70" y="180" width="220" height="660" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="110" y="238" font-size="28" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Left nav</text>
+  <rect x="105" y="270" width="150" height="58" rx="16" fill="#e9f2ff" stroke="#bcd4ff" />
+  <text x="145" y="307" font-size="22" font-family="'Segoe UI', sans-serif" fill="#2459c1" font-weight="700">Chat</text>
+  <rect x="105" y="345" width="150" height="58" rx="16" fill="#eefdf7" stroke="#bce9d3" />
+  <text x="127" y="382" font-size="22" font-family="'Segoe UI', sans-serif" fill="#14845b" font-weight="700">Channels</text>
+  <rect x="105" y="420" width="150" height="58" rx="16" fill="#fff7e8" stroke="#f0dbb0" />
+  <text x="126" y="457" font-size="22" font-family="'Segoe UI', sans-serif" fill="#9a6500" font-weight="700">Sessions</text>
+  <rect x="105" y="495" width="150" height="58" rx="16" fill="#f4f1ff" stroke="#d4ccff" />
+  <text x="131" y="532" font-size="22" font-family="'Segoe UI', sans-serif" fill="#6347d8" font-weight="700">Cron</text>
+  <rect x="105" y="570" width="150" height="58" rx="16" fill="#fff0f0" stroke="#f0c9c9" />
+  <text x="141" y="607" font-size="22" font-family="'Segoe UI', sans-serif" fill="#b34242" font-weight="700">Logs</text>
+  <rect x="105" y="645" width="150" height="58" rx="16" fill="#f0f5ff" stroke="#cad8ff" />
+  <text x="133" y="682" font-size="22" font-family="'Segoe UI', sans-serif" fill="#4063b8" font-weight="700">Config</text>
+
+  <rect x="340" y="180" width="480" height="300" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="380" y="238" font-size="30" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Chat workspace</text>
+  <text x="380" y="282" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5b7183">Use this for live runs, streamed tool cards, stop, and operator notes.</text>
+  <text x="380" y="338" font-size="22" font-family="'Segoe UI', sans-serif" fill="#2459c1" font-weight="700">Best for</text>
+  <text x="380" y="373" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">Sending a direct instruction, watching tool output, or aborting a bad run.</text>
+  <text x="380" y="429" font-size="22" font-family="'Segoe UI', sans-serif" fill="#2459c1" font-weight="700">Key actions</text>
+  <text x="380" y="464" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">chat.send, chat.abort, chat.history, chat.inject</text>
+
+  <rect x="860" y="180" width="470" height="300" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="900" y="238" font-size="30" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Session control</text>
+  <text x="900" y="282" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5b7183">This is where long-running channel conversations become manageable.</text>
+  <text x="900" y="338" font-size="22" font-family="'Segoe UI', sans-serif" fill="#9a6500" font-weight="700">Best for</text>
+  <text x="900" y="373" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">Finding a user session and changing thinking, verbose, or reasoning overrides.</text>
+  <text x="900" y="429" font-size="22" font-family="'Segoe UI', sans-serif" fill="#9a6500" font-weight="700">Key actions</text>
+  <text x="900" y="464" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">sessions.list, sessions.patch, status, context checks</text>
+
+  <rect x="340" y="520" width="480" height="320" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="380" y="578" font-size="30" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Cron and automation</text>
+  <text x="380" y="622" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5b7183">Schedule reminders, recurring summaries, or isolated automation runs.</text>
+  <text x="380" y="678" font-size="22" font-family="'Segoe UI', sans-serif" fill="#6347d8" font-weight="700">Best for</text>
+  <text x="380" y="713" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">Daily reports, night summaries, and timed follow-up actions.</text>
+  <text x="380" y="769" font-size="22" font-family="'Segoe UI', sans-serif" fill="#6347d8" font-weight="700">Key actions</text>
+  <text x="380" y="804" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">cron.list, cron.add, cron.run, cron.runs, channel delivery or webhook</text>
+
+  <rect x="860" y="520" width="470" height="320" rx="28" fill="#ffffff" stroke="#dce8f2" stroke-width="2" filter="url(#shadow)" />
+  <text x="900" y="578" font-size="30" font-family="'Segoe UI', sans-serif" fill="#1f4058" font-weight="700">Ops and recovery</text>
+  <text x="900" y="622" font-size="20" font-family="'Segoe UI', sans-serif" fill="#5b7183">Use logs, debug, approvals, and config apply to keep the gateway healthy.</text>
+  <text x="900" y="678" font-size="22" font-family="'Segoe UI', sans-serif" fill="#b34242" font-weight="700">Best for</text>
+  <text x="900" y="713" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">Tracing failures, editing config safely, and restarting with validation.</text>
+  <text x="900" y="769" font-size="22" font-family="'Segoe UI', sans-serif" fill="#b34242" font-weight="700">Key actions</text>
+  <text x="900" y="804" font-size="19" font-family="'Segoe UI', sans-serif" fill="#566b7e">logs.tail, config.apply, exec approvals, update.run, health snapshots</text>
+</svg>
