@@ -174,7 +174,7 @@
 
 **Telegram 往往需要魔法梯子。**
 
-所以你在交付或写教程时，最好提前把这个门槛写清楚。
+
 
 ### 3. Discord
 
@@ -726,94 +726,98 @@ Do not use this pattern for trivial single-step requests.
 
 ## 十二、如果你是按 Control UI 来配，实际点击路径怎么走
 
-先插一句，避免你读到这里混淆：
+这里直接说结论，不绕弯子。
 
-**这里我写的 `Control UI`，指的是 OpenClaw 官方文档里的正式叫法。**
+**你截图里的这个页面，没有创建 agent 按钮是正常的。**
 
-后面第 5 篇我写的 `Mission Control`，是我为了更方便理解，给这套后台能力起的工作流化叫法。
+而且你现在还是公网 `http` 直接打开，所以页面上还带着：
 
-两者本质上说的是同一个浏览器后台，不是两个不同系统。
+```text
+origin not allowed
+```
 
-但是这一篇讲的是多 agent 编排，所以这里统一用官方叫法 `Control UI`。
+这说明两件事：
 
-另外我补一个很重要的实测结论。
+1. 这个页面现在不能当“主配置入口”
+2. 你继续在 UI 里找按钮，基本走不下去
 
-我这次是直接拿 OpenClaw `2026.3.2` 版本做的验证，不是照着旧文档猜字段。实测下来：
+这版 OpenClaw `2026.3.2`，最稳的配置方式是：
 
-1. `Overview`、`Channels`、`Chat` 这些页面很适合做状态检查和路由验收
-2. 当前版本的 `Config` / `Channels` 表单区域，可能会出现 `schema unavailable`
-3. 顶层 agent 的创建和绑定，**更稳的做法是 CLI + raw config**
-4. Control UI 更适合拿来看“现在跑成什么样了”，而不是所有配置都在页面里点出来
+1. 用 CLI 建 agent
+2. 用 CLI 绑 channel
+3. 用 CLI 设置 subagent 并发和深度
+4. 最后回 Control UI 验收
 
-也就是说：
+你先记住一句话：
 
-**这一版 OpenClaw 的最佳实践不是“只靠 UI 点完全部配置”，而是“用 CLI / raw config 配好，再回 UI 验收”。**
-
-你先看 3 张实拍图。
+**先配，再看 UI；不是先看 UI 再硬配。**
 
 ![OpenClaw Control UI 概览页截图，可以直接看到网关地址、状态和默认会话密钥](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-ui-overview.png)
 
-这张图最有价值的地方，不是“好看”，而是你一眼就能确认：
-
-- 网关是不是活着
-- 当前控制台是不是连对了
-- 默认会话密钥现在落到了哪个 agent
-
 ![OpenClaw Control UI 频道页截图，可以直接检查各渠道是否已经配置和运行](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-ui-channels.png)
-
-这张图更适合做渠道验收：
-
-- Telegram / Discord / WhatsApp 有没有配置
-- 是不是正在运行
-- 最近一次探测和连接状态是否正常
 
 ![OpenClaw Chat 页截图，可以直接看到当前 session key，方便核对是不是进了目标 agent](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/openclaw-ui-chat.png)
 
-这张图适合拿来做最后一步核对：
+### 你现在这个生产容器，最小落地版就按这个顺序配
 
-- 现在你发出的测试消息，到底是不是进了你预期的那个 agent
+先进入容器：
 
----
-
-### 第一步：先把 Control UI 当成“验收台”，不是“幻想中的全能配置器”
-
-如果你已经在服务器上把 OpenClaw 跑起来，先打开：
-
-```text
-http://你的服务器IP:端口/?token=你的控制台token
+```bash
+docker exec -it 你的OpenClaw容器名 sh
 ```
 
-然后优先看 3 个页面：
+先确认命令在：
 
-1. `Overview`
-2. `Channels`
-3. `Chat`
+```bash
+openclaw agents --help
+openclaw config file
+```
 
-你在这里先确认 3 件事：
+如果你只想先跑通一个主入口，比如 Telegram 主机器人，就先不要一下子搞 3 个入口。
 
-1. 网关状态正常
-2. 入口渠道已经接通
-3. 聊天消息确实能落到当前 session
-
-这一步不是做复杂配置，而是先确认**这台 OpenClaw 不是假活着，而是真的能收、能路由、能回。**
-
-### 第二步：顶层 agent 先用 CLI 建，不要先赌 UI 表单
-
-这一版我实测更稳的方式是直接用 CLI。
-
-比如你要做 3 个长期 agent：
-
-- `ops-agent`
-- `deepwork-agent`
-- `dev-agent`
-
-可以直接这样建：
+先建一个主 agent：
 
 ```bash
 openclaw agents add "Ops Agent" \
   --workspace ~/.openclaw/workspace-main \
   --agent-dir ~/.openclaw/agents/ops-agent/agent \
   --model kiro-proxy/claude-haiku-4-5 \
+  --bind telegram \
+  --non-interactive
+```
+
+再把多 agent 编排的限制补上：
+
+```bash
+openclaw config set agents.defaults.subagents.maxConcurrent 2
+openclaw config set agents.defaults.subagents.maxSpawnDepth 2
+openclaw config set agents.defaults.subagents.maxChildrenPerAgent 4
+```
+
+然后检查结果：
+
+```bash
+openclaw agents list
+openclaw agents bindings
+cat ~/.openclaw/openclaw.json
+```
+
+如果你看到：
+
+- `ops-agent`
+- routing 里有 `telegram`
+- `agents.defaults.subagents` 里已经有深度和并发
+
+那就说明**已经配进去了**。
+
+### 如果你要 3 个长期 agent，就直接照下面抄
+
+```bash
+openclaw agents add "Ops Agent" \
+  --workspace ~/.openclaw/workspace-main \
+  --agent-dir ~/.openclaw/agents/ops-agent/agent \
+  --model kiro-proxy/claude-haiku-4-5 \
+  --bind feishu \
   --non-interactive
 ```
 
@@ -835,166 +839,51 @@ openclaw agents add "Dev Agent" \
   --non-interactive
 ```
 
-这里有两个重点：
+如果 agent 已经建好了，只是后面想补绑定，就用：
 
-1. `agents add` 会帮你生成这版 OpenClaw 真正认可的 agent 结构
-2. `--bind` 绑定写进去以后，UI 里就能看见对应 routing 结果
-
-### 第三步：多 agent 的并发和深度，不是配在单个 agent 身上
-
-这一步很关键，因为我前面也踩过坑。
-
-`2026.3.2` 这版里，下面这些字段**不要**写到 `agents.list[i].subagents` 里：
-
-- `enabled`
-- `maxConcurrent`
-- `maxSpawnDepth`
-- `maxChildrenPerAgent`
-
-正确位置是在：
-
-```text
-agents.defaults.subagents
+```bash
+openclaw agents bind --agent ops-agent --bind feishu
+openclaw agents bind --agent deepwork-agent --bind telegram
+openclaw agents bind --agent dev-agent --bind discord
 ```
 
-也就是说，像下面这类限制，应该放在全局默认值里：
+### 你为什么会在 UI 里看到 `0 configured`
 
-- `maxConcurrent`
-- `maxSpawnDepth`
-- `maxChildrenPerAgent`
+不是因为一定没配成功，而是因为你当前打开方式本身就有问题。
 
-而单个 agent 自己更适合写的是：
+你现在是：
 
-- `subagents.allowAgents`
-- 可选的 `subagents.model`
+- 公网 IP
+- 直接 `http`
+- 浏览器页面提示 `origin not allowed`
 
-这才是这版 schema 真正接受的写法。
+所以这个页面连完整 agent 数据都拿不到。
 
-### 第四步：渠道路由不是写在 agent 里，而是顶层 `bindings`
+更稳的看法是：
 
-这也是一个很容易写错的点。
+1. 先在容器里把 agent 配好
+2. 再用本机或 SSH 隧道去开控制台
+3. 再看 `Overview / Channels / Chat`
 
-这版 OpenClaw 不是：
+如果你非要在公网浏览器里直接看，那至少要处理：
 
-```json
-{
-  "channels": ["telegram"]
-}
-```
+- `gateway.controlUi.allowedOrigins`
 
-这种思路。
-
-而是：
-
-```json
-{
-  "bindings": [
-    {
-      "agentId": "deepwork-agent",
-      "match": {
-        "channel": "telegram"
-      }
-    }
-  ]
-}
-```
-
-也就是说：
-
-- agent 负责“我是谁，我在哪个工作区，我能拉哪些子 agent”
-- bindings 负责“哪个渠道消息该打到谁”
-
-这两层一定要分开理解。
-
-### 第五步：配完以后，回到 Control UI 做 3 轮验收
-
-这一步我建议你按固定顺序来。
-
-#### 第 1 轮：看 `Overview`
-
-确认：
-
-- 网关在线
-- 默认会话密钥已经变成你预期的主 agent
-- 健康状态正常
-
-#### 第 2 轮：看 `Channels`
-
-确认：
-
-- 飞书、Telegram、Discord 哪个已配置
-- 哪个在运行
-- 最近探测有没有报错
-
-#### 第 3 轮：去 `Chat` 或 `Sessions`
-
-发一条测试消息，确认：
-
-- 这条消息是不是进了你想要的 agent
-- 有没有串到别的入口
-
-比如你设计的是：
-
-- 飞书 -> `ops-agent`
-- Telegram -> `deepwork-agent`
-- Discord -> `dev-agent`
-
-那你就一条一条测，不要一次性赌全部正确。
-
-### 第六步：编排逻辑别配在频道页，配在主 agent 的行为里
-
-很多人会误以为：
-
-- 渠道页负责路由
-- 渠道页也顺便负责多 agent 编排
-
-其实不是。
-
-渠道页只负责：
-
-- 入口接入
-- 运行状态
-- 基础连接健康
-
-真正的多 agent 编排逻辑，应该落在：
-
-1. 主 agent 的系统提示
-2. 或者一个专门的 `team_orchestrator` Skill
-
-所以正确顺序永远是：
-
-1. 先把入口路由跑通
-2. 再把编排规则教给主 agent
-3. 最后再测 `sessions_spawn`
-
-### 第七步：先用固定复杂任务做编排回归
-
-你第一次不要拿真实线上需求压它。
-
-先给主入口 agent 一个固定模板任务，比如：
-
-```text
-请把这个需求拆成调研、实现、QA 三部分，先由编排 agent 组织 worker 执行，最后只输出一份统一总结。
-```
-
-你要观察的是：
-
-1. 主 agent 有没有先拉一个 orchestrator
-2. orchestrator 有没有再拉 research / coding / QA worker
-3. worker 的结果是不是先回给 orchestrator
-4. orchestrator 最后有没有只回一份整理好的总结
-
-只要这条链跑通，后面才值得慢慢放开更多任务类型。
+否则你会一直误以为“没配置成功”，其实只是 UI 根本没拿到数据。
 
 ---
 
 ## 十三、一个适合新手直接抄的实测配置思路
 
-这里我不再放“概念 JSON”，而是放一个**符合这版 schema 的结构示意**。
+这里我不放概念图，只放你最需要知道的 5 个点。
 
-注意：
+1. agent 自己没有 `channels` 字段
+2. 路由是在顶层 `bindings`
+3. `description` 不是这版 agent schema 的字段
+4. 子 agent 并发和深度在 `agents.defaults.subagents`
+5. 单个 agent 自己能拉谁，在 `subagents.allowAgents`
 
-下面这份结构是按 OpenClaw `2026.3.2` 的实际类型定义和 CLI 生成结果整理的，重点不是一字不差照抄，而是让你知道**该写在哪一层**。
+也就是说，你真正要认的结构是这个：
 
 ```json
 {
@@ -1066,67 +955,26 @@ agents.defaults.subagents
 }
 ```
 
-你注意几个关键点：
+如果你现在只是个人用，我还是建议你先走最短路线：
 
-1. `description` 不在这版 agent schema 里
-2. `channels` 不是 agent 自己的字段
-3. 路由是顶层 `bindings`
-4. 子 agent 并发和深度在 `agents.defaults.subagents`
-5. 单个 agent 自己的权限边界，写在 `subagents.allowAgents`
+1. 只配 1 个 Telegram 主机器人
+2. 只建 1 个 `ops-agent`
+3. 先把 `sessions_spawn` 能力跑通
+4. 后面再考虑要不要拆出飞书入口和 Discord 入口
 
-### 如果你是“三个外部入口”版
+也就是说，第一版最简单的落地不是：
 
-那就是：
+- 3 个外部机器人
+- 3 个外部入口
+- 一堆路由
 
-- 飞书作为运营 / 主调度入口
-- Telegram 作为老板或负责人私聊入口
-- Discord 作为开发团队入口
+而是：
 
-这时候就按上面这份 `bindings` 去做。
+- 1 个外部入口
+- 1 个主 agent
+- 多个内部 sub-agent
 
-### 如果你是“只有一个 Telegram 外部入口”版
-
-这其实也是我更推荐的大多数个人用户方案。
-
-也就是：
-
-- 只有 1 个 Telegram 机器人对外
-- Telegram 消息全部先进 `ops-agent`
-- `ops-agent` 在内部再拉 orchestrator / research / coding / QA 子 agent
-
-这时候你不需要再额外做 2 个对子 Telegram 机器人。
-
-正确理解是：
-
-- 外部 bot 是“人类入口”
-- 内部 sub-agent 是“系统内部分工”
-
-单 Telegram 入口版的路由可以简化成这样：
-
-```json
-{
-  "bindings": [
-    {
-      "agentId": "ops-agent",
-      "match": {
-        "channel": "telegram"
-      }
-    }
-  ]
-}
-```
-
-然后把编排能力集中放到 `ops-agent` 身上就够了。
-
-### 什么时候才需要多个外部 bot
-
-只有这几种情况我才建议你再去做多个外部入口机器人：
-
-1. 团队里不同人需要直接找不同 agent
-2. 你希望不同渠道本身就承接不同业务线
-3. 你希望某个 agent 长期独立对外提供服务
-
-如果你只是做任务拆分和编排，**内部 worker agent 默认不需要额外做成新的 Telegram / 飞书 / Discord 机器人。**
+这才是最容易先跑通的版本。
 
 ---
 
