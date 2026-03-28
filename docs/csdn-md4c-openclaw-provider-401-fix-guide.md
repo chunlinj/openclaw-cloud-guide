@@ -42,11 +42,13 @@
 
 ## 二、这篇做完后，你应该得到什么
 
-理想结果是这 3 件事：
+这次我已经在线上实际改过并回归成功。
 
-1. `http://你的IP:3000/v1/models` 不再返回 `401`
+做完以后，你应该得到这 3 件事：
+
+1. `http://你的IP:3000/v1/models` 返回 `200`
 2. OpenClaw 调 provider 时不再报 `HTTP 401: Invalid API key`
-3. `ops-agent` 能真正去调内部 worker
+3. `openclaw agent --agent ops-agent ...` 返回 `status: ok`
 
 这篇我分成两部分写：
 
@@ -257,7 +259,7 @@ cp ~/.openclaw/openclaw.json ~/.openclaw/openclaw.json.before-provider-fix-20260
 比如你可以用这种格式：
 
 ```text
-internal_openclaw_proxy_20260328_change_me
+internal_openclaw_proxy_20260328_v1
 ```
 
 然后把 AIClient 的：
@@ -274,7 +276,7 @@ internal_openclaw_proxy_20260328_change_me
 python3 - <<'PY'
 import json
 path = "/root/AIClient-2-API/configs/config.json"
-new_key = "internal_openclaw_proxy_20260328_change_me"
+new_key = "internal_openclaw_proxy_20260328_v1"
 with open(path, "r", encoding="utf-8") as f:
     data = json.load(f)
 data["REQUIRED_API_KEY"] = new_key
@@ -296,7 +298,7 @@ PY
 比如：
 
 ```bash
-openclaw config set 'models.providers.kiro-proxy.apiKey' 'internal_openclaw_proxy_20260328_change_me'
+openclaw config set 'models.providers.kiro-proxy.apiKey' 'internal_openclaw_proxy_20260328_v1'
 openclaw config validate
 ```
 
@@ -317,19 +319,36 @@ openclaw config validate
 
 这一步你要按你现在的实际启动方式来。
 
-我这次查到的环境里，3000 代理是从这个目录拉起来的：
+我这次线上查到的环境里，3000 代理是从这个目录拉起来的：
 
 ```text
 /root/AIClient-2-API
 ```
 
-而且进程是：
+而且守护方式是：
 
 ```text
-npm start -> node src/core/master.js
+PM2 -> aiclient-2-api -> npm start -> node src/core/master.js
 ```
 
-如果你和我一样是这么拉起来的，可以按自己的现网规则重启。
+所以我这次实际用的是：
+
+```bash
+pm2 restart aiclient-2-api
+```
+
+然后再看日志确认：
+
+```bash
+tail -n 25 /root/.pm2/logs/aiclient-2-api-out.log
+```
+
+你要看到类似：
+
+```text
+Required API Key: internal_openclaw_proxy_20260328_v1
+Unified API Server running on http://0.0.0.0:3000
+```
 
 OpenClaw 这边也建议顺手重启一次容器：
 
@@ -337,34 +356,70 @@ OpenClaw 这边也建议顺手重启一次容器：
 docker restart openclaw-ORD17742461621975243
 ```
 
-这一段我不建议你盲抄我的进程管理命令。
-
-原因很简单：
-
-**你自己的代理进程可能不是用同一种方式守护的。**
-
-所以这里你只要记住一个原则：
-
-- 改完 AIClient 配置后，要让 3000 那层真正加载新配置
-- 改完 OpenClaw 配置后，要让容器重新读取新 key
-
-就够了。
+![如果你这边也是 PM2 守护，就直接重启 aiclient-2-api，并在日志里确认新的内部 key 已经生效](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/oc-step-24-provider-pool-reset-and-pm2.png)
 
 ---
 
-## 十二、Step 8：按这 3 条顺序做回归
+## 十二、Step 8：如果账号池已经被打成 unhealthy，先恢复再测
+
+这一步是我这次线上真实修复里额外做过的一步。
+
+因为在修 401 之前，3000 代理已经把两个可用 Kiro 节点打成了：
+
+- `isHealthy = false`
+- `errorCount = 3`
+
+如果你也出现这种情况，只改内部 key 还不够。
+
+你还要把非禁用节点先恢复成可用状态，然后再重启一次 PM2。
+
+我这次实际用的是：
+
+```bash
+python3 - <<'PY'
+import json
+from pathlib import Path
+path = Path('/root/AIClient-2-API/configs/provider_pools.json')
+data = json.loads(path.read_text(encoding='utf-8'))
+for item in data.get('claude-kiro-oauth', []):
+    if not item.get('isDisabled'):
+        item['isHealthy'] = True
+        item['errorCount'] = 0
+        item['lastErrorMessage'] = None
+path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+print('provider_pools reset done')
+PY
+
+pm2 restart aiclient-2-api
+```
+
+只要你重启后再打开 `provider_pools.json`，看到活跃节点变回：
+
+- `isHealthy = true`
+- `errorCount = 0`
+
+那就可以继续下一步。
+
+这一段不是每个人都一定要做。
+
+但如果你这边已经被健康检查打死过，这一步很关键。
+
+---
+
+## 十三、Step 9：按这 3 条顺序做回归
 
 ### 1. 先测 3000 的 `/v1/models`
 
 ```bash
-curl -H "Authorization: Bearer internal_openclaw_proxy_20260328_change_me" \
+curl -H "Authorization: Bearer internal_openclaw_proxy_20260328_v1" \
   http://127.0.0.1:3000/v1/models
 ```
 
-你要看到的是：
+我这次线上真实跑出来的是：
 
-- 不再是 `401`
-- 能正常返回模型列表
+- `HTTP/1.1 200 OK`
+- 返回了模型列表
+- 第一条就是 `claude-haiku-4-5`
 
 ### 2. 再测 OpenClaw 配置是否有效
 
@@ -384,7 +439,14 @@ Config valid
 docker exec openclaw-ORD17742461621975243 sh -lc "openclaw agent --agent ops-agent --message 'Use your available subagents. Ask each worker to return one line describing its role, then summarize the three roles in Chinese. Keep the final answer short.' --json --timeout 180"
 ```
 
-如果前两步都通了，而这一步还是失败，那时你再去查：
+我这次线上真实跑出来的结果是：
+
+- 返回 JSON
+- `status = ok`
+- `summary = completed`
+- **没有再出现 `HTTP 401: Invalid API key`**
+
+如果你前两步都通了，而这一步还是失败，那时你再去查：
 
 - Kiro 账号池
 - provider pool 健康状态
@@ -392,11 +454,11 @@ docker exec openclaw-ORD17742461621975243 sh -lc "openclaw agent --agent ops-age
 
 但至少这时候，问题已经不再是 `401` 了。
 
-![修完以后先回归 /v1/models，再回归 openclaw config，最后才回归真实 multi-agent 调用](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/oc-step-24-provider-fix-regression-checks.png)
+![这次线上回归已经跑通：3000 的 /v1/models 返回 200，OpenClaw 真实调用返回 status ok](https://cdn.jsdelivr.net/gh/chunlinj/openclaw-cloud-guide@main/docs/images/oc-step-25-provider-fix-success-regression.png)
 
 ---
 
-## 十三、为什么我不建议你第一反应就关 `token-manager`
+## 十四、为什么我不建议你第一反应就关 `token-manager`
 
 因为那样改动面更大。
 
@@ -412,22 +474,22 @@ docker exec openclaw-ORD17742461621975243 sh -lc "openclaw agent --agent ops-age
 
 ---
 
-## 十四、你现在到底该怎么判断自己是不是修好了
+## 十五、你现在到底该怎么判断自己是不是修好了
 
 别靠感觉。
 
 你就看这 4 条：
 
-1. `3200 validate` 你不再拿它去校验 OpenClaw 的内部 key
-2. `3000 /v1/models` 对内部 key 返回 `200`
-3. OpenClaw `config validate` 返回 `Config valid`
-4. 真实 `openclaw agent --agent ops-agent ...` 不再报 `HTTP 401: Invalid API key`
+1. `3000 /v1/models` 对内部 key 返回 `200`
+2. OpenClaw `config validate` 返回 `Config valid`
+3. 真实 `openclaw agent --agent ops-agent ...` 返回 `status: ok`
+4. 整个过程不再出现 `HTTP 401: Invalid API key`
 
 满足这 4 条，才叫真的修完。
 
 ---
 
-## 十五、如果你修完以后还不通，下一步查什么
+## 十六、如果你修完以后还不通，下一步查什么
 
 如果 401 已经没了，但真实调用还是不通，那下一步就查：
 
@@ -444,7 +506,7 @@ docker exec openclaw-ORD17742461621975243 sh -lc "openclaw agent --agent ops-age
 
 ---
 
-## 十六、这篇的核心价值只有一句话
+## 十七、这篇的核心价值只有一句话
 
 如果你现在的 OpenClaw provider 用的是 `ak_` key，而 3000 代理又启用了 `token-manager`，那你的请求会先走 token 校验，不会直接走默认认证。
 
